@@ -1,0 +1,64 @@
+1. Login / create account
+2. store the account type:
+    normal will have access to self account only
+    admin will have access to all customers' and other admins' account
+3. features:
+    deposit
+    withdraw
+    transfer
+    view account details
+    delete account
+    display all accounts (admin only feature)
+    exit
+
+workflow:
+1. Create Account
+    User enters:
+
+    Name
+    Account number
+    password
+    Account type (Savings / Current)
+    Initial balance
+    The system saves this data in a txt file.
+
+for login, omit somethings from 1.
+
+2. Deposit Money
+    ask amount
+    The balance is updated.
+
+3. withdraw Money
+    User provides:
+    ask withdraw amount
+    if current balance >= withdraw amount: transaction success, else: fail message and show balance
+    update balace for success. store transaction in txt file for this user
+
+4. transfer Money
+    ask account to which money is to be transferred
+    ask transfer amount
+    if current balance >= transfer amount: transaction success, else: fail message and show balance
+    update balace for success. store transaction in txt file for this user
+
+5. view account details check
+    show the details:
+        eg: Account Number: 1001 (regular / admin)
+            password
+            Name: Shivam
+            account type
+            transaction history(show only when this option is chosen)
+            Balance: 4000
+
+6. delete account
+    User Enters:
+    ask are you sure?
+    if yes:
+        Show thank you for your time message
+        delete the account
+
+7. display all accounts (admin only feature) (show this option iff acount type is admin)
+    show all account numbers with respective names
+    chosing an account will show their account details;
+
+8. exit
+    program ends
