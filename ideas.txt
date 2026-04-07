@@ -16,7 +16,7 @@ workflow:
     User enters:
 
     Name
-    Account number
+    // Account number
     password
     Account type (Savings / Current)
     Initial balance
