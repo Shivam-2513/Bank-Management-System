@@ -1,3 +1,7 @@
+in one run, only 1 task is performed
+if admin wants to truncate all files(fresh start for new bank), only they can do it
+
+
 1. Login / create account
 2. store the account type:
     normal will have access to self account only
