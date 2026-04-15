@@ -7,20 +7,21 @@
 #include <ctime>
 #include <chrono>
 using namespace std;
-string curr_time(){
+typedef long long int ll;
+string curr_time() {
     auto now = chrono::system_clock::now();
-
     time_t current_time = chrono::system_clock::to_time_t(now);
 
-    string time = ctime(&current_time);  // prints readable time
+    string time = ctime(&current_time);
+
+    if (!time.empty() && time.back() == '\n') {
+        time.pop_back();
+    }
+
     return time;
 }
 void clear_account_details_csv() {
     ofstream file("account_details.csv", ios::trunc);
-    file.close();
-}
-void clear_transaction_history_txt() {
-    ofstream file("transaction_history.txt", ios::trunc);
     file.close();
 }
 void create_account(string password){
@@ -44,8 +45,8 @@ void create_account(string password){
         acc_no = stoi(acc_no_str) + 1;
     }
 
-    ofstream acc_details("account_details.csv");
-    string name; ll password; double balance;
+    ofstream acc_details("account_details.csv", ios::app);
+    string name; string balance;
     cout << "Enter your name: "; cin >> name; cout << '\n';
     cout << "Enter your initial balance: "; cin >> balance; cout << '\n';
 
@@ -144,9 +145,9 @@ void update_balance(string user_acc_no, string old_balance, string change){
     rename("temp.csv", "account_details.csv");
 
     //update transaction history
-    ofstream tr("transactions_" + user_acc_no + ".csv");
+    ofstream tr("transactions_" + user_acc_no + ".csv", ios::app);
     
-    tr << curr_time << "," << balance << "," << stoi(balance) + stoi(change);
+    tr << curr_time() << "," << balance << "," << stoi(balance) + stoi(change) << '\n';
 
     return;
 }
@@ -161,7 +162,7 @@ void view_transactions(string acc_no){
     cout << "Operation Completed\n";
     tr.close();
 }
-void perform_task(string this_account, int command){
+void perform_task(string this_account, ll command){
     cout << "Enter your password: \n";
     ll entered_password; cin >> entered_password;
 
@@ -201,7 +202,10 @@ void perform_task(string this_account, int command){
         cout << "Enter amount: \n";
         string amount; cin >> amount;
         amount = "-" + amount;
-        update_balance(acc_no, balance, amount);
+        if (stoi(amount) > stoi(balance)) cout << "Insufficient balance\n";
+        else{
+            update_balance(acc_no, balance, amount);
+        }
         break;
     }
     case 3: {
@@ -230,12 +234,14 @@ void perform_task(string this_account, int command){
                 cout << "Successfully Transferred " << amount << "to " << dest_name << '\n'; 
             }
         } 
+        break;
     }
     case 4: {
         cout << "Acc no.: " << acc_no << '\n';
         cout << "Name: " << name << '\n';
         cout << "Password: " << password << '\n';
         cout << "Balance: " << balance << '\n';
+        break;
     }
     case 5: {
         cout << "Are you sure?:(Yes/No)\n";
@@ -245,10 +251,12 @@ void perform_task(string this_account, int command){
         else{
             delete_account(acc_no);
             cout << "Account Successfully deleted!\n";
-        }    
+        }  
+        break;  
     }
     case 6: {
-        view_transactions(this_account);
+        view_transactions(acc_no);
+        break;
     }
     case 7: {
         break;
@@ -263,7 +271,7 @@ void perform_task(string this_account, int command){
 
 int main(){
     cout << "Welcome to Shivam Bank\n" << "1. Login (press 1)\n" << "2. Create Account (press 2)\n";
-    int t; cin >> t;
+    ll t; cin >> t;
 
     if (t == 1){
         //ask account no.
@@ -283,9 +291,10 @@ int main(){
                  << "3. transfer\n"
                  << "4. view account details\n"
                  << "5. delete account\n"
-                 << "6. display all accounts (admin only feature)\n"
-                 << "7. exit\n";
-            int command; cin >> command;
+                 << "6. view transactions\n"
+                 << "7. display all accounts (admin only feature)\n"
+                 << "8. exit\n";
+            ll command; cin >> command;
             perform_task(this_account, command);
         }
         
