@@ -4,9 +4,17 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <ctime>
+#include <chrono>
 using namespace std;
-typedef long long int ll;
-#define loop(i, start, end) for(long long int i = start; i <= end; ++i)
+string curr_time(){
+    auto now = chrono::system_clock::now();
+
+    time_t current_time = chrono::system_clock::to_time_t(now);
+
+    string time = ctime(&current_time);  // prints readable time
+    return time;
+}
 void clear_account_details_csv() {
     ofstream file("account_details.csv", ios::trunc);
     file.close();
@@ -110,9 +118,9 @@ void update_balance(string user_acc_no, string old_balance, string change){
     ofstream out_file("temp.csv");
     ifstream in_file("account_details.csv");
 
+    string curr_acc_no, name, password, balance;
     string line;
     while(getline(in_file, line)){
-        string curr_acc_no, name, password, balance;
     
         stringstream ss(line);
         
@@ -134,12 +142,26 @@ void update_balance(string user_acc_no, string old_balance, string change){
 
     remove("account_details.csv");
     rename("temp.csv", "account_details.csv");
+
+    //update transaction history
+    ofstream tr("transactions_" + user_acc_no + ".csv");
+    
+    tr << curr_time << "," << balance << "," << stoi(balance) + stoi(change);
+
     return;
 }
-void view_transactions(string this_account){
-    
+void view_transactions(string acc_no){
+    //transactions_[acc_no].csv {without []}
+    cout << "Transaction history for account no.: " << acc_no << '\n';
+    ifstream tr("transactions_" + acc_no + ".csv");
+    string line;
+    while(getline(tr, line)){
+        cout << line << '\n';
+    }
+    cout << "Operation Completed\n";
+    tr.close();
 }
-void perform_task(string this_account, ll command){
+void perform_task(string this_account, int command){
     cout << "Enter your password: \n";
     ll entered_password; cin >> entered_password;
 
@@ -241,7 +263,7 @@ void perform_task(string this_account, ll command){
 
 int main(){
     cout << "Welcome to Shivam Bank\n" << "1. Login (press 1)\n" << "2. Create Account (press 2)\n";
-    ll t; cin >> t;
+    int t; cin >> t;
 
     if (t == 1){
         //ask account no.
@@ -263,7 +285,7 @@ int main(){
                  << "5. delete account\n"
                  << "6. display all accounts (admin only feature)\n"
                  << "7. exit\n";
-            ll command; cin >> command;
+            int command; cin >> command;
             perform_task(this_account, command);
         }
         
